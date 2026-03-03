@@ -1,0 +1,59 @@
+{
+  "name": "repolm",
+  "displayName": "RepoLM",
+  "description": "Generate LLM Context Capsules from your project",
+  "version": "0.1.0",
+  "main": "./out/extension.js",
+  "publisher": "repolm",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other",
+    "Developer Tools"
+  ],
+  "activationEvents": [
+    "onCommand:repolm.generateCapsule",
+    "onCommand:repolm.openCapsule"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "repolm.generateCapsule",
+        "title": "RepoLM: Generate Context Capsule",
+        "description": "Generate a Context Capsule from selected files for LLM prompts"
+      },
+      {
+        "command": "repolm.openCapsule",
+        "title": "RepoLM: Open Capsule",
+        "description": "Open the generated context capsule"
+      }
+    ],
+    "configuration": {
+      "title": "RepoLM",
+      "properties": {
+        "repolm.outputFileName": {
+          "type": "string",
+          "default": "project.context.md",
+          "description": "Output filename for the context capsule"
+        },
+        "repolm.includeGitIgnore": {
+          "type": "boolean",
+          "default": true,
+          "description": "Respect .gitignore when scanning files"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.75.0",
+    "@vscode/test-electron": "^2.3.0",
+    "typescript": "^5.0.0"
+  }
+}
