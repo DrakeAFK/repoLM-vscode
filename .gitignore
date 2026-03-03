@@ -4,3 +4,4 @@ out/
 .vscode-test/
 .vscode/
 .DS_Store
+project.context.md
