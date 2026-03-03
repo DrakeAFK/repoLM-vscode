@@ -1,10 +1,10 @@
 {
   "name": "repolm",
   "displayName": "RepoLM",
-  "description": "Generate LLM Context Capsules from your project",
+  "description": "Generate AI Agent Context Capsules from your project",
   "version": "0.1.0",
   "main": "./out/extension.js",
-  "publisher": "repolm",
+  "publisher": "DrakeAFK",
   "engines": {
     "vscode": "^1.75.0"
   },
