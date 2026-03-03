@@ -10,11 +10,9 @@
   },
   "categories": [
     "Other",
-    "Developer Tools"
-  ],
-  "activationEvents": [
-    "onCommand:repolm.generateCapsule",
-    "onCommand:repolm.openCapsule"
+    "AI", 
+    "Machine Learning",
+    "Chat"
   ],
   "contributes": {
     "commands": [
