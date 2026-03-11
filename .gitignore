@@ -5,3 +5,4 @@ out/
 .vscode/
 .DS_Store
 project.context.md
+.llm*

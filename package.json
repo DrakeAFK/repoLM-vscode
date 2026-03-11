@@ -1,7 +1,8 @@
 {
-  "name": "repolm",
+  "name": "repolm-vscode",
   "displayName": "RepoLM",
   "description": "Generate AI Agent Context Capsules from your project",
+  "icon": "assets/repolm-icon.png",
   "version": "0.1.0",
   "main": "./out/extension.js",
   "publisher": "DrakeAFK",
