@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
+import ignore, { Ignore } from 'ignore';
 
 interface FileInfo {
     path: string;
@@ -21,6 +22,7 @@ const PRESET_IGNORE_PATTERNS = [
     'obj',
     'target',
     '.next',
+    '.svelte-kit',
     '.cache',
     'dist',
     'build',
@@ -55,48 +57,17 @@ function shouldIgnore(filePath: string, isDir: boolean): boolean {
     return false;
 }
 
-function loadGitIgnore(rootPath: string): string[] {
+function loadGitIgnore(rootPath: string): Ignore {
+    const ig = ignore();
     const gitIgnorePath = path.join(rootPath, '.gitignore');
-    if (!fs.existsSync(gitIgnorePath)) {
-        return [];
+    if (fs.existsSync(gitIgnorePath)) {
+        const content = fs.readFileSync(gitIgnorePath, 'utf-8');
+        ig.add(content);
     }
-    
-    const content = fs.readFileSync(gitIgnorePath, 'utf-8');
-    return content.split('\n')
-        .map(line => line.trim())
-        .filter(line => line && !line.startsWith('#'));
+    return ig;
 }
 
-function matchesGitIgnore(filePath: string, gitIgnorePatterns: string[]): boolean {
-    for (const pattern of gitIgnorePatterns) {
-        if (pattern.startsWith('/')) {
-            const trimmed = pattern.slice(1);
-            if (filePath === trimmed || filePath.startsWith(trimmed + '/')) {
-                return true;
-            }
-        } else if (pattern.endsWith('/')) {
-            const dir = pattern.slice(0, -1);
-            const parts = filePath.split('/');
-            if (parts.includes(dir)) {
-                return true;
-            }
-        } else if (pattern.includes('*')) {
-            const regex = new RegExp('^' + pattern.replace(/\*/g, '.*') + '$');
-            const baseName = path.basename(filePath);
-            if (regex.test(baseName)) {
-                return true;
-            }
-        } else {
-            const parts = filePath.split('/');
-            if (parts.includes(pattern)) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-function scanFiles(rootPath: string, gitIgnorePatterns: string[]): FileInfo[] {
+function scanFiles(rootPath: string, gitIgnore: Ignore): FileInfo[] {
     const files: FileInfo[] = [];
     
     function walk(dir: string): void {
@@ -107,15 +78,13 @@ function scanFiles(rootPath: string, gitIgnorePatterns: string[]): FileInfo[] {
             const relPath = path.relative(rootPath, fullPath);
             
             if (shouldIgnore(relPath, entry.isDirectory())) {
-                if (entry.isDirectory()) {
-                    continue;
-                }
+                continue;
             }
             
-            if (matchesGitIgnore(relPath, gitIgnorePatterns)) {
-                if (entry.isDirectory()) {
-                    continue;
-                }
+            // Normalize to forward slashes for cross-platform gitignore matching
+            const normalizedRelPath = relPath.split(path.sep).join('/');
+            if (gitIgnore.ignores(normalizedRelPath)) {
+                continue;
             }
             
             if (entry.isDirectory()) {
@@ -201,8 +170,8 @@ async function generateCapsule() {
     const outputFileName = config.get<string>('outputFileName') || 'project.context.md';
     const includeGitIgnore = config.get<boolean>('includeGitIgnore') ?? true;
     
-    const gitIgnorePatterns = includeGitIgnore ? loadGitIgnore(rootPath) : [];
-    const files = scanFiles(rootPath, gitIgnorePatterns);
+    const gitIgnore = includeGitIgnore ? loadGitIgnore(rootPath) : ignore();
+    const files = scanFiles(rootPath, gitIgnore);
     
     if (files.length === 0) {
         vscode.window.showInformationMessage('No files found to include');

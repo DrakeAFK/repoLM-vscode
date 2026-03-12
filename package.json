@@ -3,7 +3,7 @@
   "displayName": "RepoLM",
   "description": "Generate AI Agent Context Capsules from your project",
   "icon": "assets/repolm-icon.png",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "./out/extension.js",
   "publisher": "DrakeAFK",
   "engines": {
@@ -11,7 +11,7 @@
   },
   "categories": [
     "Other",
-    "AI", 
+    "AI",
     "Machine Learning",
     "Chat"
   ],
@@ -54,5 +54,8 @@
     "@types/vscode": "^1.75.0",
     "@vscode/test-electron": "^2.3.0",
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "ignore": "^7.0.5"
   }
 }
