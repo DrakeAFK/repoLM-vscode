@@ -39,9 +39,10 @@ To build the extension into a `.vsix` package:
 
 ```bash
 npm run vscode:prepublish
+npx @vscode/vsce package
 ```
 
-This compiles the TypeScript to JavaScript in the `out/` directory.
+This compiles the TypeScript to JavaScript in the `out/` directory and creates a `.vsix` file in the root directory.
 
 ### Install Extension Manually
 
